@@ -58,7 +58,7 @@ RUN mkdir /.m2 && chmod -R g+rwX /.m2
 
 COPY rootfs /
 RUN /opt/bitnami/scripts/java/postunpack.sh
-ENV APP_VERSION="2.10.3" \
+ENV APP_VERSION="2.11.0" \
     BITNAMI_APP_NAME="spring-cloud-dataflow-composed-task-runner" \
     JAVA_HOME="/opt/bitnami/java" \
     PATH="/opt/bitnami/java/bin:$PATH"

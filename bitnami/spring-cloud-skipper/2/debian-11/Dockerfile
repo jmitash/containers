@@ -11,10 +11,10 @@ LABEL com.vmware.cp.artifact.flavor="sha256:1e1b4657a77f0d47e9220f0c37b9bf780258
       org.opencontainers.image.created="2023-09-04T23:05:32Z" \
       org.opencontainers.image.description="Application packaged by VMware, Inc" \
       org.opencontainers.image.licenses="Apache-2.0" \
-      org.opencontainers.image.ref.name="2.11.0-RC-debian-11-r112" \
+      org.opencontainers.image.ref.name="2.11.0-RC1-debian-11-r112" \
       org.opencontainers.image.title="spring-cloud-skipper" \
       org.opencontainers.image.vendor="VMware, Inc." \
-      org.opencontainers.image.version="2.11.0-RC"
+      org.opencontainers.image.version="2.11.0-RC1"
 
 ENV HOME="/" \
     OS_ARCH="${TARGETARCH:-amd64}" \
@@ -59,7 +59,7 @@ RUN chmod g+rwX /opt/bitnami
 COPY rootfs /
 RUN /opt/bitnami/scripts/spring-cloud-skipper/postunpack.sh
 RUN /opt/bitnami/scripts/java/postunpack.sh
-ENV APP_VERSION="2.11.0-RC" \
+ENV APP_VERSION="2.11.0" \
     BITNAMI_APP_NAME="spring-cloud-skipper" \
     JAVA_HOME="/opt/bitnami/java" \
     PATH="/opt/bitnami/java/bin:/opt/bitnami/common/bin:$PATH"
