@@ -11,10 +11,10 @@ LABEL com.vmware.cp.artifact.flavor="sha256:1e1b4657a77f0d47e9220f0c37b9bf780258
       org.opencontainers.image.created="2023-09-04T23:05:32Z" \
       org.opencontainers.image.description="Application packaged by VMware, Inc" \
       org.opencontainers.image.licenses="Apache-2.0" \
-      org.opencontainers.image.ref.name="2.9.3-debian-11-r112" \
+      org.opencontainers.image.ref.name="2.11.0-RC-debian-11-r112" \
       org.opencontainers.image.title="spring-cloud-skipper" \
       org.opencontainers.image.vendor="VMware, Inc." \
-      org.opencontainers.image.version="2.9.3"
+      org.opencontainers.image.version="2.11.0-RC"
 
 ENV HOME="/" \
     OS_ARCH="${TARGETARCH:-amd64}" \
@@ -29,7 +29,6 @@ RUN mkdir -p /tmp/bitnami/pkg/cache/ && cd /tmp/bitnami/pkg/cache/ && \
     COMPONENTS=( \
       "java-17.0.8-7-3-linux-${OS_ARCH}-debian-11" \
       "yq-4.35.1-0-linux-${OS_ARCH}-debian-11" \
-      "spring-cloud-skipper-2.9.3-3-linux-${OS_ARCH}-debian-11" \
     ) && \
     for COMPONENT in "${COMPONENTS[@]}"; do \
       if [ ! -f "${COMPONENT}.tar.gz" ]; then \
@@ -40,6 +39,18 @@ RUN mkdir -p /tmp/bitnami/pkg/cache/ && cd /tmp/bitnami/pkg/cache/ && \
       tar -zxf "${COMPONENT}.tar.gz" -C /opt/bitnami --strip-components=2 --no-same-owner --wildcards '*/files' && \
       rm -rf "${COMPONENT}".tar.gz{,.sha256} ; \
     done
+
+# Custom: also install local components in case Bitnami hasn't built the artifacts yet
+COPY components/* /tmp/bitnami/pkg/cache/
+RUN cd /tmp/bitnami/pkg/cache/ && \
+    LOCAL_COMPONENTS=( \
+      "spring-cloud-skipper-2.11.0-RC1-linux-${OS_ARCH}-debian-11" \
+    ) && \
+    for LOCAL_COMPONENT in "${LOCAL_COMPONENTS[@]}"; do \
+      tar -zxf "${LOCAL_COMPONENT}.tar.gz" -C /opt/bitnami --strip-components=2 --no-same-owner --wildcards '*/files' && \
+      rm -rf "${LOCAL_COMPONENT}".tar.gz{,.sha256} ; \
+    done
+
 RUN apt-get autoremove --purge -y curl && \
     apt-get update && apt-get upgrade -y && \
     apt-get clean && rm -rf /var/lib/apt/lists /var/cache/apt/archives
@@ -48,7 +59,7 @@ RUN chmod g+rwX /opt/bitnami
 COPY rootfs /
 RUN /opt/bitnami/scripts/spring-cloud-skipper/postunpack.sh
 RUN /opt/bitnami/scripts/java/postunpack.sh
-ENV APP_VERSION="2.9.3" \
+ENV APP_VERSION="2.11.0-RC" \
     BITNAMI_APP_NAME="spring-cloud-skipper" \
     JAVA_HOME="/opt/bitnami/java" \
     PATH="/opt/bitnami/java/bin:/opt/bitnami/common/bin:$PATH"
